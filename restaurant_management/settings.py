@@ -68,12 +68,14 @@ WSGI_APPLICATION = "restaurant_management.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# Veritabanı ayarlarını güncelleyin
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),  # db.sqlite3'ü doğru konuma koyun
     }
 }
+
 
 
 # Password validation
