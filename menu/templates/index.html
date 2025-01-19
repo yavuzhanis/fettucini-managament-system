@@ -1,0 +1,295 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+
+{% block content %}
+<main class="main">
+    <!-- Hero Section -->
+    <section id="hero" class="hero section light-background">
+        <div class="container">
+            <div class="row gy-4 justify-content-center justify-content-lg-between">
+                <div class="col-lg-5 order-2 order-lg-1 d-flex flex-column justify-content-center">
+                    <h1 data-aos="fade-up">Sağlıklı ve<br>Lezzetli Yemeklerin Tadını Çıkarın</h1>
+                    <p data-aos="fade-up" data-aos-delay="100">Biz, Yetkin bir makarna Ekibiyiz.
+                    </p>
+                    <div class="d-flex" data-aos="fade-up" data-aos-delay="200">
+                        <a href="#contact" class="btn-get-started">Bize Ulaşın!</a>
+                        <a href="https://www.youtube.com/watch?v=zztgNQvbtPc"
+                            class="glightbox btn-watch-video d-flex align-items-center"><i
+                                class="bi bi-play-circle"></i><span>Videoyu İzle</span></a>
+                    </div>
+                </div>
+                <div class="col-lg-5 order-1 order-lg-2 hero-img" data-aos="zoom-out">
+                    <img src="{% static 'img/Dükkan.jpg' %}" class="img-fluid animated" alt="">
+                </div>
+            </div>
+        </div>
+    </section><!-- /Hero Section -->
+    <!-- About Section -->
+    <!-- Menu Section -->
+    <section id="menu" class="menu section">
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+            <p><span>Fettucini </span> <span class="description-title">Menümüzü İnceleyin</span></p>
+        </div>
+
+        <div class="container">
+            <ul class="nav nav-tabs d-flex justify-content-center" data-aos="fade-up" data-aos-delay="100">
+                <li class="nav-item">
+                    <a class="nav-link active show" data-bs-toggle="tab" data-bs-target="#menu-starters">
+                        <h4>Ürünlerimiz</h4>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" data-bs-target="#menu-drinks">
+                        <h4>İçecekler</h4>
+                    </a>
+                </li>
+            </ul>
+
+            <div class="tab-content" data-aos="fade-up" data-aos-delay="200">
+                <!-- Ürünlerimiz -->
+                <div class="tab-pane fade active show" id="menu-starters">
+                    <div class="tab-header text-center">
+                        <h3>MENU</h3>
+                    </div>
+
+                    <div class="row gy-5">
+                        {% for item in food_items %}
+                        <div class="col-lg-4 menu-item">
+                            <a href="{{ item.image.url }}" class="glightbox">
+                                <img src="{{ item.image.url }}" class="menu-img img-fluid" alt="{{ item.name }}">
+                            </a>
+                            <h4>{{ item.name }}</h4>
+                            <!-- Küçük Boy Butonu -->
+                            <button class="add-to-cart" data-name="{{ item.name }}" data-price="{{ item.small_price }}">
+                                Küçük Boy
+                            </button>
+                            <!-- Büyük Boy Butonu -->
+                            <button class="add-to-cart" data-name="{{ item.name }}"
+                                data-price="{{ item.medium_price }}">
+                                Büyük Boy
+                            </button>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                </div>
+
+                <!-- İçecekler -->
+                <div class="tab-pane fade" id="menu-drinks">
+                    <div class="tab-header text-center">
+                        <h3>İÇECEKLER</h3>
+                    </div>
+
+                    <div class="row gy-5">
+                        {% for item in drink_items %}
+                        <div class="col-lg-4 menu-item">
+                            <a href="{{ item.image.url }}" class="glightbox">
+                                <img src="{{ item.image.url }}" class="menu-img img-fluid" alt="{{ item.name }}">
+                            </a>
+                            <h4>{{ item.name }}</h4>
+                            <button class="add-to-cart" data-name="{{ item.name }}"
+                                data-price="{{ item.small_price }}">Sepete Ekle</button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- JavaScript -->
+    <script>
+        const cartItems = []; // Sepet içeriğini tutacak dizi
+        const cartElement = document.getElementById("cart-items");
+        const totalPriceElement = document.getElementById("total-price");
+        const cartIcon = document.getElementById("cart-icon");
+        const cartCount = document.getElementById("cart-count");
+        const cartPopup = document.getElementById("cart-popup");
+        const closeCartButton = document.getElementById("close-cart");
+        // Sepete ekleme işlemi
+        document.querySelectorAll(".add-to-cart").forEach(button => {
+            button.addEventListener("click", () => {
+                const name = button.dataset.name;
+                const price = parseFloat(button.dataset.price); // Fiyatı tam sayı değil ondalıklı olarak al
+
+                // Sepete yeni ürün ekle
+                cartItems.push({ name, price });
+                updateCart(); // Sepeti güncelle
+            });
+        });
+
+        // Sepeti güncelleme fonksiyonu
+        function updateCart() {
+            cartElement.innerHTML = ""; // Eski içeriği temizle
+            let total = 0; // Toplam fiyatı sıfırla
+
+            // Sepet öğelerini listele
+            cartItems.forEach((item, index) => {
+                const li = document.createElement("li");
+                li.innerHTML = `
+                    ${item.name} - ${item.price.toFixed(2)} TL
+                    <button class="remove-from-cart" data-index="${index}">x</button>
+                `;
+                cartElement.appendChild(li);
+                total += item.price; // Toplam fiyatı güncelle
+            });
+
+            totalPriceElement.textContent = `${total.toFixed(2)} TL`; // Toplam fiyatı ekrana yaz
+            cartCount.textContent = cartItems.length; // Sepet ikonundaki ürün sayısını güncelle
+
+            // Sepetten ürün çıkarma işlemi için event listener ekle
+            document.querySelectorAll(".remove-from-cart").forEach(button => {
+                button.addEventListener("click", (e) => {
+                    const index = parseInt(e.target.dataset.index);
+                    cartItems.splice(index, 1); // İlgili ürünü diziden kaldır
+                    updateCart(); // Sepeti güncelle
+                });
+            });
+
+            // Sipariş Ver butonunun görünürlüğünü ayarla
+            if (cartItems.length > 0) {
+                document.getElementById("order-btn").style.display = "block";
+            } else {
+                document.getElementById("order-btn").style.display = "none";
+            }
+        }
+
+        // Sepet popup'ını açma
+        cartIcon.addEventListener("click", () => {
+            cartPopup.style.display = "block"; // Popup'ı göster
+        });
+
+        // Sepet popup'ını kapama
+        closeCartButton.addEventListener("click", () => {
+            cartPopup.style.display = "none"; // Popup'ı gizle
+        });
+        // CSRF token'ını meta tag'den al
+        function getCSRFToken() {
+            const csrfTokenMetaTag = document.querySelector('meta[name="csrf-token"]');
+            return csrfTokenMetaTag ? csrfTokenMetaTag.getAttribute('content') : '';
+        }
+
+        // Sipariş Ver butonuna tıklama
+        // Sipariş Ver butonuna tıklama
+        document.getElementById("order-btn").addEventListener("click", () => {
+            if (cartItems.length > 0) {
+                // Masa numarasını al
+                const tableNumber = prompt("Masa numaranızı girin:");
+                if (tableNumber) {
+                    // Sepet verisini ve masa numarasını checkout view'ına gönder
+                    fetch('/checkout/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCSRFToken(),  // CSRF token'ı doğru fonksiyon ile al
+                        },
+                        body: JSON.stringify({
+                            'table_number': tableNumber,
+                            'cart_items': cartItems,
+                        })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log("Backend Response:", data);  // Backend'den gelen veriyi yazdırıyoruz
+
+                            if (data.success) {
+                                // Sipariş başarılı, sadece mesaj göster
+                                alert("Siparişiniz alınmıştır.");
+                                // Sepeti temizle veya başka bir işlem yap
+                                cartItems = []; // Sepeti temizle
+                                updateCart(); // Sepet güncelleme fonksiyonunu çağır
+                            } else {
+                                // Eğer checkout'ta bir sorun varsa, mesaj ver
+                                alert("Sipariş sırasında bir hata oluştu. Lütfen tekrar deneyin.");
+                            }
+                        })
+                      
+                }
+            } else {
+                alert("Sepetiniz boş. Lütfen ürün ekleyin.");
+            }
+        });
+    </script>
+
+    <!-- /Menu Section -->
+    <section id="contact" class="contact section">
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+            <h2>İletişim</h2>
+            <p><span>Yardım mı İstiyorsunuz? </span> <span class="description-title">Bize Ulaşın</span></p>
+        </div><!-- End Section Title -->
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
+            <div class="mb-5">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3046.829549180676!2d28.984841476782517!3d40.21285437147307!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14ca151d0d60b5e5%3A0x53dbf79850694868!2sFettucini%20Cheese!5e0!3m2!1str!2str!4v1736714413268!5m2!1str!2str"
+                    width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"
+                    referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div><!-- End Google Maps -->
+            <div class="row gy-4">
+                <div class="col-md-6">
+                    <div class="info-item d-flex align-items-center" data-aos="fade-up" data-aos-delay="200">
+                        <i class="icon bi bi-geo-alt flex-shrink-0"></i>
+                        <div>
+                            <h3>Address</h3>
+                            <p>İzmir Yolu Caddesi, Bursa, TR 16130</p>
+                        </div>
+                    </div>
+                </div><!-- End Info Item -->
+                <div class="col-md-6">
+                    <div class="info-item d-flex align-items-center" data-aos="fade-up" data-aos-delay="300">
+                        <i class="icon bi bi-telephone flex-shrink-0"></i>
+                        <div>
+                            <h3>Call Us</h3>
+                            <a href="tel:+905425731653">+90 542 573 16 53</a>
+                        </div>
+                    </div>
+                </div><!-- End Info Item -->
+                <div class="col-md-6">
+                    <div class="info-item d-flex align-items-center" data-aos="fade-up" data-aos-delay="400">
+                        <i class="icon bi bi-envelope flex-shrink-0"></i>
+                        <div>
+                            <h3>Email Us</h3>
+                            <p>info@example.com</p>
+                        </div>
+                    </div>
+                </div><!-- End Info Item -->
+                <div class="col-md-6">
+                    <div class="info-item d-flex align-items-center" data-aos="fade-up" data-aos-delay="500">
+                        <i class="icon bi bi-clock flex-shrink-0"></i>
+                        <div>
+                            <h3>Opening Hours<br></h3>
+                            <p><strong>Mon-Sat:</strong> 11AM - 23PM; <strong>Sunday:</strong> Closed</p>
+                        </div>
+                    </div>
+                </div><!-- End Info Item -->
+            </div>
+            <form action="forms/contact.php" method="post" class="php-email-form" data-aos="fade-up"
+                data-aos-delay="600">
+                <div class="row gy-4">
+                    <div class="col-md-6">
+                        <input type="text" name="name" class="form-control" placeholder="Your Name" required="">
+                    </div>
+                    <div class="col-md-6 ">
+                        <input type="email" class="form-control" name="email" placeholder="Your Email" required="">
+                    </div>
+                    <div class="col-md-12">
+                        <input type="text" class="form-control" name="subject" placeholder="Subject" required="">
+                    </div>
+                    <div class="col-md-12">
+                        <textarea class="form-control" name="message" rows="6" placeholder="Message"
+                            required=""></textarea>
+                    </div>
+                    <div class="col-md-12 text-center">
+                        <div class="loading">Loading</div>
+                        <div class="error-message"></div>
+                        <div class="sent-message">Your message has been sent. Thank you!</div>
+                        <button type="submit">Send Message</button>
+                    </div>
+                </div>
+            </form><!-- End Contact Form -->
+        </div>
+    </section><!-- /Contact Section -->
+</main>
+{% endblock content %}

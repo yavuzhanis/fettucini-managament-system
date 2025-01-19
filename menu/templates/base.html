@@ -1,0 +1,234 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Fettucini Makarna</title>
+    <meta name="description">
+    <meta name="keywords">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <!-- Favicons -->
+    <link href="#" rel="icon">
+    <link href="#" rel="apple-touch-icon">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Amatic+SC:wght@400;700&display=swap"
+        rel="stylesheet">
+    <!-- Vendor CSS Files -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/aos/aos.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/glightbox/css/glightbox.min.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/swiper/swiper-bundle.min.css' %}" rel="stylesheet">
+    <!-- Main CSS File -->
+    <link href="{% static 'css/main.css' %}" rel="stylesheet">
+    <style>
+        .cart {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid black;
+            border-radius: 28px;
+        }
+
+        #cart-items {
+            list-style: none;
+            padding: 0;
+        }
+
+        .add-to-cart,
+        .remove-from-cart {
+            margin-top: 10px;
+            padding: 8px 12px;
+            background-color: transparent;
+            color: rgb(183, 183, 5);
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .remove-from-cart {
+            color: rgb(183, 183, 5);
+            margin-left: 10px;
+        }
+
+        .add-to-cart:hover,
+        .remove-from-cart:hover {
+            background-color: rgb(15, 15, 15);
+        }
+
+        /* Sepet Popup Stili */
+        .cart-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .cart-popup-content {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        #cart-count {
+            background-color: rgb(183, 183, 5);
+            color: white;
+            padding: 0 5px;
+            border-radius: 50%;
+            font-size: 12px;
+        }
+
+        #order-btn {
+            background-color: #cdca07;
+            /* Enerjik bir turuncu renk */
+            color: white;
+            /* Metin rengi beyaz */
+            padding: 12px 24px;
+            /* Butonun etrafında boşluk */
+            font-size: 16px;
+            /* Yazı boyutu */
+            border: none;
+            /* Kenarlık yok */
+            border-radius: 4px;
+            /* Köşeleri yuvarla */
+            cursor: pointer;
+            /* Fare ile üzerine gelindiğinde el işareti */
+            transition: background-color 0.3s ease;
+            /* Hover efektine geçiş */
+        }
+    </style>
+</head>
+
+<body class="index-page">
+    <header id="header" class="header d-flex align-items-center sticky-top">
+        <div class="container position-relative d-flex align-items-center justify-content-between">
+            <a href="index.html" class="logo d-flex align-items-center me-auto me-xl-0">
+
+                <h1 class="sitename">Fettucini Cheese</h1>
+                <span>.</span>
+            </a>
+            <nav id="navmenu" class="navmenu">
+                <ul>
+                    <li><a href="#hero" class="active">Anasayfa<br></a></li>
+                    <li><a href="#menu">Menü</a></li>
+                    <li><a href="#contact">İletişim</a></li>
+                </ul>
+                <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+            </nav>
+
+            <a class="btn-getstarted" href="index.html#contact">Bize Ulaşın</a>
+
+            <!-- Sepet İkonu -->
+            <button class="nav-link" id="cart-icon" style="background: none; border: none; cursor: pointer;">
+                <i class="bi bi-cart4" style="font-size: 26px;"></i> <span id="cart-count"
+                    style="background-color: #9eae0e; color: white; padding: 0 5px; border-radius: 50%; font-size: 12px;">0</span>
+            </button>
+        </div>
+    </header>
+    <!-- Sepet Modal -->
+    <div id="cart-popup" class="cart-popup" style="display: none;">
+        <div class="cart-popup-content">
+            <h5>Sepetiniz</h5>
+            <!-- Sepet öğeleri listesi -->
+            <ul id="cart-items"></ul>
+            <!-- Toplam fiyatı göster -->
+            <p><strong>Toplam:</strong> <span id="total-price">0</span></p>
+            <!-- Sipariş Ver butonu -->
+            <button id="order-btn" style="display: none;" class="btn btn-primary">Siparişi Ver</button>
+            <br>
+            <!-- Modal Kapatma Butonu -->
+            <button id="close-cart" class="btn btn-secondary">Kapat</button>
+            <meta name="csrf-token" content="{{ csrf_token }}">
+        </div>
+    </div>
+
+    <main class="main">
+        {% block content %}
+        {% endblock content %}
+    </main>
+    <footer id="footer" class="footer dark-background">
+        <div class="container">
+            <div class="row gy-3">
+                <div class="col-lg-3 col-md-6 d-flex">
+                    <i class="bi bi-geo-alt icon"></i>
+                    <div class="address">
+                        <h4>Address</h4>
+                        <p>İzmir Yolu Caddesi</p>
+                        <p>Bursa, TR 16130</p>
+                        <p></p>
+                    </div>
+
+                </div>
+
+                <div class="col-lg-3 col-md-6 d-flex">
+                    <i class="bi bi-telephone icon"></i>
+                    <div>
+                        <h4>Contact</h4>
+                        <p>
+                            <strong>Phone:</strong> <a href="tel:+905425731653">+90 542 573 16 53</a><br>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6 d-flex">
+                    <i class="bi bi-clock icon"></i>
+                    <div>
+                        <h4>Opening Hours</h4>
+                        <p>
+                            <strong>Mon-Sat:</strong> <span>12AM - 21PM</span><br>
+                            <strong>Sunday</strong>: <span>Closed</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h4>Follow Us</h4>
+                    <div class="social-links d-flex">
+                        <a href="https://www.instagram.com/fettucini_cheese?igsh=bzUzZWZoanBvY3Vt" class="instagram"><i
+                                class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="container copyright text-center mt-4">
+            <p>© <span>Copyright</span> <strong class="px-1 sitename">Fettucini</strong> <span>All Rights
+                    Reserved</span></p>
+            <div class="credits">
+                Designed by <a href="https://www.yavuzhanis.dev/">Yavuzhan İs</a>
+            </div>
+            <br>
+            <div class="footer-content text-center">
+                <a href="{% url 'admin:index' %}" class="btn btn-dark text-white ">Admin Paneline Git</a>
+            </div>
+
+        </div>
+    </footer>
+    <!-- Scroll Top -->
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
+            class="bi bi-arrow-up-short"></i></a>
+    <!-- Preloader -->
+    <div id="preloader"></div>
+    <!-- Vendor JS Files -->
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'vendor/php-email-form/validate.js' %}"></script>
+    <script src="{% static 'vendor/aos/aos.js' %}"></script>
+    <script src="{% static 'vendor/glightbox/js/glightbox.min.js' %}"></script>
+    <script src="{% static 'vendor/purecounter/purecounter_vanilla.js' %}"></script>
+    <script src="{% static 'vendor/swiper/swiper-bundle.min.js' %}"></script>
+    <!-- Main JS File -->
+    <script src="{% static 'js/main.js' %}"></script>
+
+</body>
+
+</html>

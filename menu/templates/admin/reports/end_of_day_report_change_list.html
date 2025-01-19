@@ -1,0 +1,19 @@
+
+{% load static %}
+
+{% block object-tools %}
+    <div class="object-tools">
+        <!-- Gün Sonu Raporu Oluştur Butonu -->
+        <a href="{% url 'admin:generate_report' %}" class="btn btn-primary">Gün Sonu Raporu Oluştur</a>
+        <br />
+        <br />
+        
+        <!-- Raporu İndirme Butonu -->
+        <a href="{% url 'admin:download_report' %}" class="btn btn-success">Gün Sonu Raporu İndir</a>
+        <br />
+        <br />
+        
+        <!-- Admin Paneline Geri Dönme Butonu -->
+        <a href="{% url 'admin:index' %}" class="btn btn-secondary">Admin Paneline Geri Dön</a>
+    </div>
+{% endblock object-tools %}
