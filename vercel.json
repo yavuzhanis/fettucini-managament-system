@@ -1,14 +1,14 @@
 {
   "builds": [
     {
-      "src": "restaurant_management/manage.py",
+      "src": "restaurant_management/wsgi.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "restaurant_management/$1"
+      "dest": "restaurant_management/wsgi.py"
     }
   ]
 }
