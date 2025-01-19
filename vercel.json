@@ -1,5 +1,4 @@
 {
-  "version": 2,
   "builds": [
     {
       "src": "restaurant_management/manage.py",
@@ -9,18 +8,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "restaurant_management/manage.py"
+      "dest": "restaurant_management/$1"
     }
-  ],
-  "env": {
-    "DJANGO_SETTINGS_MODULE": "restaurant_management.settings"
-  },
-  "build": {
-    "env": {
-      "VERCEL": "1"
-    },
-    "commands": {
-      "post-build": "python restaurant_management/manage.py migrate"
-    }
-  }
+  ]
 }
